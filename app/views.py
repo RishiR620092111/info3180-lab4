@@ -83,6 +83,32 @@ def add_header(response):
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
 
+@app.route('/filelisting')
+def filelisting():
+    if not session.get('logged_in'):
+        abort(401)
+        
+    file_folder = app.config['UPLOAD_FOLDER']
+    
+    docs = []
+    pics = []
+    for subdir, dirs, files in os.walk(file_folder):    
+        for file in files: 
+            if not file.startswith('.') and not file.endswith('.jpg'):
+                docs.append(file)
+            if not file.startswith('.') and file.endswith('.jpg'): 
+                pics.append(file)
+    return render_template('files.html', file_names = docs, gallery = pics)         
+
+@app.route('/filelisting')
+def iter_over():
+    if not session.get('logged_in'):
+        abort(401)
+        
+    " list files uploaded"
+   
+    for files in os.walk('/static/uploads'):
+         return (files)
 
 @app.errorhandler(404)
 def page_not_found(error):
